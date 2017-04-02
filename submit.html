@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="amazon">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap模板</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/docs.css">
+    <link rel="stylesheet" href="css/header&footer.css">
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/tooltip.js"></script>
+    <script src="js/angular.js"></script>
+    <script src="js/angular-animate.js"></script>
+    <script src="js/angular-route.js"></script>
+    <script src="js/timeformat.js"></script>
+</head>
+<body ng-controller="submitCtrl">
+     <div class="container">
+         <img src="img/location.gif" class="statePic" alt="">
+         <div class="row">
+             <div class="col-lg-4"><h2>检查订单</h2></div>
+         </div>
+         <div class="row">
+             <p>当您选择了我们的商品和服务，即表示您已经接受了亚马逊的隐私声明、使用条件和商品的退换货政策。另外，亚马逊海外购使用条件 适用于您在亚马逊海外购商店购买的商品。您点击“提交订单”按钮后，我们将向您发送电子邮件或短信确认我们已收到您的订单，只有当我们向您发出发货确认的电子邮件或短信，方构成我们对您的订单的确认，我们和您之间的订购合同才成立。</p>
+         </div>
+         <hr>
+         <div class="row">
+             <div class="col-lg-9">
+                <div class="well">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <h4>送货地址 <a href="">更改</a></h4>
+                            <p>姓名:{{address[0].name}}</p>
+                            <p>城市:{{address[0].city}}</p>
+                            <p>社区:{{address[0].community}}</p>
+                            <p>邮编:{{address[0].mail}}</p>
+                            <p>电话: {{address[0].phone}}</p>
+                        </div>
+                        <div class="col-lg-4">
+                            <h4>支付方式 <a href="">更改</a></h4>
+                            <p>{{pay}}</p>
+                        </h4></div>
+                        <div class="col-lg-4">
+                            <h4>输入充值码或促销优惠码</h4>
+                            <div class="row">
+                                <div class="col-lg-8"><input type="text" class="form-control"></div>
+                                <div class="col-lg-4"><a href="" class="btn btn-default">输入</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="well">
+                     <h4>预计送达日期： {{time.year}}年{{time.month}}月{{time.date}}日</h4> 如果您在接下来的 10 小时 21 分钟内订购 （详情）
+                 </div>
+             </div>
+             <div class="col-lg-3">
+                    <div class="well">
+                        <a href="" class="btn btn-primary btn-block" ng-click="payForList()">提交订单</a>
+                        <h4>订单概览</h4>
+                        <p>商品：	￥ {{sumPrice}}</p>
+                        <p>配送&处理:	￥ 23.00</p>
+                        <p>小计：	￥ {{sumPricePlus}}</p>
+                        <p>配送费优惠：	-￥ 23.00</p>
+                        <hr>
+                        <p>订单总计：	￥ {{sumPrice}}</p>
+                    </div>
+             </div>
+         </div>
+         <hr>
+     </div>
+     <footer></footer>
+     <script>
+         $('footer').load('data/footer.php')
+     </script>
+     <script>
+         var app=angular.module('amazon',['ng','ngRoute','ngAnimate'])
+         var addressId=localStorage['addressId']//地址id
+         var payStyle=localStorage['payStyle']//支付方式
+         var sendStyle=localStorage['sendStyle']
+         var userName=localStorage['userName']
+         var userId=localStorage['userId']
+         var phone=localStorage['phone']
+         var address=localStorage['address']
+         app.controller('submitCtrl',['$scope','$http',function ($scope,$http) {
+             /**日期部分**/
+             var now =new Date()
+             var year=now.getFullYear()
+             var month=now.getMonth()+1
+             var date=now.getDate()+1
+             var payTime=Date.parse(localStorage['payTime'])//最晚付款时间
+             //console.log(payTime,localStorage['payTime'])
+             //console.log(payTime-now+"时差")
+             var delay=Date(payTime-now)
+             //console.log(delay)
+             var time={year:year,month:month,date:date}
+             $scope.time=time
+             /**订单价格部分**/
+             $http({
+                 method:'post',
+                 url:'data/cart.php?id='+userId
+             }).success(function (data) {
+                 /**订单概览部分**/
+                 //计算总价
+                 $scope.productInfo=data
+                 console.log(data)
+                 var sumPrice=0
+                 for(var i=0;i<$scope.productInfo.length;i++){
+                     sumPrice+=parseInt($scope.productInfo[i].count)*parseInt($scope.productInfo[i].sinPrice)
+                 }
+                 $scope.sumPrice=(sumPrice).toFixed(2)
+                 $scope.sumPricePlus=(23+sumPrice).toFixed(2)
+                 //console.log($scope.sumPrice,sumPrice)
+                 /**提交订单部分**/
+                 $scope.payForList=function(){
+                     console.log(address)
+                     $http({
+                         method:'post',
+                         url:'data/addList.php?userId='+1+'&userName='+userName+'&phone='+phone+'&payTime='+payTime+'&payStyle='+payStyle+'&sendStyle='+sendStyle+'&address='+address+'&sumPrice='+sumPrice
+                     }).success(function (data) {
+                         console.log('下单成功！',data)
+                     })
+                 }
+             })
+             /**用户信息部分**/
+             $http({
+                 method:'post',
+                 url:'data/addressChosen.php?id='+addressId
+             }).success(function (data) {
+                 $scope.address=data
+                 //console.log(data[0].name,addressId,$scope.address.name)
+                 switch(payStyle){//判断支付方式
+                     case '0':$scope.pay='支付宝-在线付款'
+                         break;
+                     case '1':$scope.pay='货到付款-POS机刷卡'
+                         break;
+                     case '2':$scope.pay='货到付款-现金'
+                         break;
+                     case '3':$scope.pay='网银支付'
+                         break;
+                 }
+
+             })
+
+
+
+         }])
+     </script>
+</body>
+</html>

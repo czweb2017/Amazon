@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/angular.js"></script>
+    <link rel="stylesheet" href="css/header&footer.css">
+    <style>
+        .hide{
+            visibility: hidden;
+        }
+        .loginBox{
+            width:350px;
+            border:1px solid #ddd;
+            border-radius: 5px;
+            margin:0 auto;
+            padding:20px;
+            text-align: left;
+        }
+        .centerBox{
+            width:400px;
+            margin:0 auto;
+            text-align:center
+        }
+        .logoImg{
+            margin:0 auto;
+            margin-top:20px;
+            margin-bottom:20px;
+            width:103px;
+            height:31px;
+            background-image: url("img/unity.png");
+            background-position:-5px -130px;
+        }
+        *{
+            font-family: SimHei;
+        }
+        .loginBox p{
+            font-size: 8px;
+            color: indianred;
+        }
+    </style>
+</head>
+<body>
+    <div class="centerBox">
+        <div class="logoImg"></div>
+        <div class="loginBox">
+            <h1 style="font-size: 28px">注册</h1>
+            姓名
+            <input id="na" type="text" placeholder="第一个字符为大写字母，最少2位字符" class="form-control keepaway">
+            <p class="hide">姓名不能少于2个字符且首字母必须大写！</p>
+            邮箱(或通过手机、移动设备注册)
+            <input id="email" type="text" class="form-control keepaway">
+            <p class="hide">邮箱需遵循XXX@XXX.com格式！</p>
+            密码
+            <input id="pwd" type="keyword" placeholder="至少6个字符" class="form-control keepaway">
+            <p class="hide">密码应至少为6位！</p>
+            确认密码
+            <input id="confirm_pwd" type="keyword" class="form-control keepaway">
+            <button onclick="confirm()" class="btn btn-primary btn-block keepaway">创建账户</button>
+            <h6>By creating an account, you agree to Amazon's <a href="">Conditions</a> of Use and <a href="#">Privacy Notice</a>.</h6>
+            <hr>
+            已经拥有账户? <a href="log.html">登录</a>
+        </div>
+    </div>
+    <script>
+        /**注册验证模块**/
+        function confirm() {
+            var name=$('#na').val()
+            var namePass=(/^[A-Z]+\w+$/).test(name)//验证姓名是否通过
+            console.log("姓名"+namePass)
+            var email=$('#email').val()
+            var emailPass=(/^([a-zA-Z0-9_-])+@[a-zA-Z0-9.]+\.com$/).test(email)//验证邮箱是否通过
+            console.log("邮箱"+emailPass)
+            var pwd=$('#pwd').val()
+            var pwdConfirm=$('#confirm_pwd').val()
+            var pwdPass=false//验证密码是否通过
+            if(pwd.length>=6&&pwd==pwdConfirm){
+                pwdPass=true
+            }
+            console.log("密码"+pwdPass)//检验密码是否通过
+            if(namePass&&emailPass&&pwdPass){
+                console.log("验证通过！")
+                $('.loginBox p').addClass('hide')
+                setTimeout(function(){
+                    $.ajax({
+                        url:'data/register.php?name='+name+"&email="+email+"&pwd="+pwd,
+                        type:'post',
+                        dataType: 'text',
+                        success:function(data){
+                            console.log('Success!'+data)
+                        }
+                    })
+                },1000)
+            }else{
+                console.log("验证失败！")
+                $('.loginBox p').removeClass('hide')
+            }
+        }
+    </script>
+</body>
+</html>

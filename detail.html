@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="amazon">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>详情页</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/docs.css">
+    <link rel="stylesheet" href="css/header&footer.css">
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/tooltip.js"></script>
+    <script src="js/angular.js"></script>
+    <script src="js/angular-animate.js"></script>
+    <script src="js/angular-route.js"></script>
+    <style>
+        #addToCart{
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body ng-controller="detailCtrl">
+<header class="keepaway">
+    <div class="adv"><a href="#"><img src="img/head.jpg" alt=""></a></div>
+    <div class="my_nav">
+        <div class="a1"><a href="#"><img style="margin:10px 0 0 20px;" src="img/nav_l.png" alt=""></a></div>
+        <div class="a2"><div class="a2_all">全部</div><input type="text"><div class="a2_search">搜索</div></div>
+        <div class="a3"><a href="#"><img style="margin:10px 20px 0 0;" src="img/nav_r.jpg" alt=""></a></div>
+    </div>
+    <div class="navmain">
+        <div class="navmain_left">
+            <div class="nav_list"><a href="#">商品列表</a></div>
+            <ul>
+                <li><a href="#">iPhone8</a></li>
+                <li><a href="detail.html">佳能5D-II</a></li>
+                <li><a href="#">华为P10</a></li>
+                <li><a href="#">GTX1080</a></li>
+                <li><a href="#">小米手环</a></li>
+            </ul>
+        </div>
+        <div class="navmain_right">
+            <div class="nav_list"><a href="#" onclick="loginOrExit()" id="loginState">您好！请登录</a></div>
+            <div class="nav_list"><a href="#">购物车</a></div>
+            <div class="nav_list"><a href="#">心愿单</a></div>
+        </div>
+    </div>
+</header>
+     <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-2" >
+                            <a href="#" ng-repeat="item in imgList[imgIndex].lit" id="litImg" ng-click="showMid($index)">
+                                <img  ng-src="img/{{item}}" class="img-responsive img-thumbnail" alt="">
+                            </a>
+                        </div>
+                        <div class="col-lg-10" id="midImg">
+                            <img ng-src="img/{{imgList[imgIndex].mid[defMidPic]}}" class="img-responsive img-thumbnail" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" id="detailInfo">
+                    <h4>{{lists[deShow].name}}</h4>
+                    <p><a href="#">{{lists[deShow].store}}</a></p>
+                    <p>价格:￥{{lists[deShow].price}}</p>
+                    <p>款式:</p>
+                    <label ng-repeat="item in lists"><input ng-click="print($index)" type="radio" ng-model="cla" ng-value="$index" name="class">{{item.name}}{{$index}}</label>
+                    <p>颜色:{{lists[deShow].color}}</p>
+                    <label ng-repeat="item in colorList"><input type="radio" ng-init="color=0" ng-click="printColor($index)" ng-model="color" ng-value="$index" name="color">{{item}}{{$index}}</label>
+                    <p>配送至:
+                        提交
+                        北京东城区
+                        库存中仅剩 {{lists[deShow].count}} 件</p>
+                    <p>送达日期:
+                        后天(3月7日)–下周四(3月9日)，请即刻下单并选择“快递送货上门”。</p>
+                    <p>销售配送:	由{{lists[deShow].store}}直接销售和发货。</p>
+                    <p>亚马逊交易承诺：买家收货后，亚马逊支付给卖家。</p>
+                    <p>支持礼品卡、一键信用卡支付、银行卡等，但不支持货到付款。<a href="#">详情</a></p>
+                    <a href="#">显示更多</a>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="well">
+                    <p>￥{{lists[deShow].price*num}}+￥23.00运费</p>
+                    <p>库中仅剩{{lists[deShow].count}}件。</p>由<b>奥林巴斯专卖店</b>销售
+                    <p>数量:</p>
+                    <select class="form-control"  ng-init="num='1'" ng-model="num">
+                        <option value="1" selected = "selected">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <button id="addToCart" type="button" ng-click="submit()" class="btn btn-primary btn-block">加入购物车</button>
+                    <hr>
+                    <p><a href="#">开启“一键下单”功能</a></p>
+                    <a href="#">（什么是“一键下单”？）</a>
+                    <hr>
+                    <a href="#" class="btn btn-default btn-block">加入心愿单</a>
+                </div>
+                <div class="well">
+                        <div class="btn btn-default btn-block">账户充值</div>
+                </div>
+            </div>
+        </div>
+         <div class="row col-lg-offset-1 keepaway">近期浏览过的商品 <a href="#">更多商品</a></div>
+         <div class="row keepaway">
+             <div class="col-lg-2 col-lg-offset-1"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+         </div>
+     </div>
+     <footer></footer>
+     <script>
+         /**图片显示**/
+         var imgList=[{lit:['o_little0.jpg','o_little1.jpg','o_little2.jpg','o_little3.jpg'],mid:['o_mid0.jpg','o_mid1.jpg','o_mid2.jpg','o_mid3.jpg']},{lit:['i8_little1.jpg','i8_little2.jpg'],mid:['i8_mid1.jpg','i8_mid2.jpg']},{lit:['xm_little1.jpg','xm_little2.jpg'],mid:['xm_mid1.jpg','xm_mid2.jpg']},{lit:['p10_little1.jpg','p10_little2.jpg','p10_little3.jpg'],mid:['p10_mid1.jpg','p10_mid2.jpg','p10_mid3.jpg']},{lit:['n_little1.jpg','n_little2.jpg','n_little3.jpg','n_little4.jpg'],mid:['n_mid1.jpg','n_mid2.jpg','n_mid3.jpg','n_mid4.jpg']}]
+         /**验证登陆、登陆或退出**/
+         var userName=localStorage['userName']
+         console.log(userName)
+         $('#loginState').text('123')
+         if(userName==''){
+             $('header #loginState').text('您好！请登录')
+         }else{
+             $('header #loginState').text('欢迎'+userName+',点击退出')
+         }
+         function loginOrExit(){
+             if(localStorage['userName']==''){
+                 location.href="log.html"
+             }else{
+                 localStorage['userName']=''
+                 $('header #loginState').text('您好！请登录')
+             }
+         }
+         //var userId=localStorage['id']
+         var addtoCart
+         var now =new Date()
+         var app=angular.module('amazon',['ng','ngRoute','ngAnimate']);
+         app.controller('detailCtrl',['$scope','$location','$http',function($scope,$location,$http){
+             $scope.lists=null;
+             $scope.num=1//默认数量
+             $scope.deShow=0;//产品默认显示id 且仅有三中款式
+             $scope.cla=0//选择款式
+             $scope.myList={}//声明要展示的商品列表
+             $scope.print=function(index){//打印当前选择类
+                 $scope.cla=index
+                 var colors=$scope.lists[index].color //获取颜色列表
+                 $scope.color=0
+                 $scope.colorList=colors.split("")
+                 console.log('颜色',colors)
+                 console.log('选择class',$scope.cla)
+                 $scope.deShow=$scope.cla
+             }
+             $scope.printColor=function(index){
+                 $scope.color=index
+                 console.log(index,$scope.color)
+                 console.log($scope.colorList[index])
+                 $scope.choseColor=$scope.colorList[index]
+                 console.log($scope.choseColor)
+             }
+             $scope.submit=function(){//提交表单
+                 $scope.myList={userId:1,buyName:$scope.lists[$scope.cla].name,color:$scope.choseColor,class:$scope.cla,count:Number($scope.num),road:23,sinPrice:parseFloat($scope.lists[$scope.cla].price)}
+                 console.log($scope.myList)
+                 var userId=localStorage['userId']
+                 $http({
+                     method:'post',
+                     url:'data/addToCart.php?class='+parseFloat($scope.lists[$scope.cla].class)+"&color="+$scope.choseColor+ "&count="+Number($scope.num)+ "&road="+23+"&userId="+userId+"&buyName="+$scope.lists[$scope.cla].name+"&sinPrice="+parseFloat($scope.lists[$scope.cla].price)+"&type="+parseFloat($scope.lists[$scope.cla].type)
+                 }).success(function(data){
+                     alert("加入购物车成功！"+data)
+                     location.href="cart.html"
+                 })
+             }
+             /**获取显示的指定class商品,显示商品图片**/
+             var productionClass=location.search.substr(7);//获取图片编号
+             productionClass=parseInt(productionClass)
+             $scope.imgList=imgList
+             $scope.imgIndex=productionClass
+             $scope.defMidPic=0//默认中等图片显示
+             $scope.showMid=function(index){
+                 $scope.defMidPic=index
+             }
+             /**发送请求获取产品信息**/
+             $http({
+                 method:'post',
+                 url:'data/detail.php?class='+productionClass
+             }).success(function(res){
+                 $scope.lists=res;
+                 $scope.choseColor=$scope.lists[0].color
+                 $scope.print(0)
+                 $scope.classNum=$scope.lists.length
+                 console.log(res,$scope.classNum);
+                 $scope.myList={userId:1,buyName:$scope.lists[$scope.cla].name,color:$scope.lists[0].color,class:$scope.cla,count:Number($scope.num),road:23,sinPrice:parseFloat(res[0].price)}
+                 console.log($scope.myList)
+             })
+         }])
+     </script>
+     <script>
+         $('footer').load('data/footer.php')
+     </script>
+</body>
+</html>

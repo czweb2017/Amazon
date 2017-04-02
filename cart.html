@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="amazon">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap模板</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/docs.css">
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/tooltip.js"></script>
+    <script src="js/angular.js"></script>
+    <script src="js/angular-animate.js"></script>
+    <script src="js/angular-route.js"></script>
+    <link rel="stylesheet" href="css/header&footer.css">
+</head>
+<body ng-controller="cartCtrl">
+<header></header>
+     <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <h3><b>购物车</b></h3>
+                <div class="cart_item">
+                    <div class="row" ng-repeat="item in Lists" ng-init="item.num=1">
+                        <hr>
+                            <div class="col-lg-2">
+                                <img src="img/cart_item.jpg" class="img-responsive" alt="">
+                            </div>
+                            <div class="col-lg-5">
+                                <a href="#">{{item.buyName}}</a>
+                                <p>现在有货</p>
+                                <p>海外购<b>亚马逊美国</b></p>
+                                <p><a href="" ng-click="del($index)">删除</a>|<a href="#">移入收藏夹</a></p>
+                            </div>
+                            <div class="col-lg-3"><p>价格:</p>￥{{item.sinPrice*item.count}}</div>
+                            <div class="col-lg-2">
+                                <p>数量:</p>
+                                <select id="countSelect" class="form-control" ng-model="item.count" ng-click="changeCount($index)">
+                                    <option value="1" selected="selected">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="well">
+                    <h4>小计({{countOfSum}}件商品):￥{{sum}}</h4>
+                    <button type="button" class="btn btn-primary btn-block" ng-click="toPay()">进入结算中心</button>
+                    <hr>
+                </div>
+                <div class="well">
+                        <div class="btn btn-default btn-block">账户充值</div>
+                </div>
+            </div>
+        </div>
+         <div class="row col-lg-offset-1">近期浏览过的商品 <a href="#">更多商品</a></div>
+         <div class="row keepaway">
+             <div class="col-lg-2 col-lg-offset-1"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+         </div>
+         <div class="row col-lg-offset-1">购买过此商品的买家还购买了 <a href="#">更多商品</a></div>
+         <div class="row keepaway">
+             <div class="col-lg-2 col-lg-offset-1"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+             <div class="col-lg-2"><a href="#"><img src="img/p1.jpg" class="img-responsive" alt=""></a></div>
+         </div>
+     </div>
+     <footer></footer>
+     <script>
+         $('header').load('data/header.php')
+         $('footer').load('data/footer.php')
+     </script>
+     <script>
+         var userId=localStorage['userId']
+         var app=angular.module('amazon',['ng','ngRoute','ngAnimate']);
+         app.controller('cartCtrl',['$scope','$location','$http',function($scope,$location,$http){
+                $scope.num=1
+             $http({
+                    method:'post',
+                    url:'data/cart.php?id='+userId
+                }).success(
+                    /**请求初始数据**/
+                    function(res){
+                        console.log("原始数据",res)
+                        $scope.Lists=res
+                        $scope.sum=0
+                        $scope.countOfSum=0
+                        for(var i=0;i<$scope.Lists.length;i++){//获取初始总价
+                                $scope.sum+=$scope.Lists[i].sinPrice*$scope.Lists[i].count
+                                $scope.countOfSum+=Number($scope.Lists[i].count)
+                        }
+                        /**删除商品**/
+                        $scope.del=function(index){
+                            console.log("删除物品索引："+index,$scope.Lists[index].id)
+                            $http({
+                                method:'post',
+                                url:'data/deleteCart.php?id='+$scope.Lists[index].id
+                            }).success(function(){
+                                console.log('删除成功！')
+                            })
+                            $scope.Lists.splice(index,1)
+                        }
+                        /**更改产品数量**/
+//                        $scope.logIndex=function(index){
+//                            console.log(index,this.value)
+//                        }
+//                        $scope.change=function(index){
+//                            console.log("更改物品索引："+index,$scope.Lists[index].id)
+////                            $http({
+////                                method:'post',
+////                                url:'data/changeCart.php?id='+$scope.Lists[index].id
+////                            }).success(function(){
+////                                console.log('删除成功！')
+////                            })
+////                            $scope.Lists.splice(index,1)
+//                        }
+                        /**去结算**/
+                        $scope.toPay=function(){//创建下单时间，10小时候未下单清除订单
+                            var payTime=new Date()//下单时间
+                            payTime.setHours(payTime.getHours()+10)
+                            //console.log(payTime)
+                            //console.log($scope.Lists)
+                            localStorage['payTime']=payTime//存储下单时间
+                            location.href="location.html"
+                        }
+                        /**获取点击要更改的对象index**/
+                        $scope.changeCount=function(index){
+                            console.log('更改对象索引',index)
+                            console.log($scope.Lists[index].id)
+                            console.log($scope.Lists[index].count)
+                            $http({
+                                method:'post',
+                                url:'data/changeCart.php?id='+$scope.Lists[index].id+'&count='+$scope.Lists[index].count
+                            }).success(function(data){
+                                console.log(data)
+                            })
+
+                        }
+                        /**列表改变时重新计算总价**/
+                        $scope.$watch('Lists',function(){
+                            $scope.sum=0
+                            $scope.countOfSum=0
+                            for(var i=0;i<$scope.Lists.length;i++){
+                                $scope.sum+=$scope.Lists[i].sinPrice*$scope.Lists[i].count
+                                $scope.countOfSum+=Number($scope.Lists[i].count)
+                            }
+                            $scope.sum=$scope.sum.toFixed(2)
+//                            if(changeId!=''&&changeId!=0){
+//                                //console.log($scope.Lists[0].count)
+//                                //console.log("改变位置",changeId,"改变值",$scope.Lists[Number(changeId)].count)
+//                            }
+//                                for(var j=0;j<oldLists.length;j++){
+//                                    console.log(changeId,$scope.Lists[j].count)
+//                                }
+//                            $http({
+//                                method:'post',
+//                                url:'data/cart.php'
+//                            }).success(function(data){
+//                                console.log(data)
+//                            })
+                        },true)
+                    }
+                )
+
+         }])
+     </script>
+</body>
+</html>

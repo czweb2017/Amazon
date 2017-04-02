@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="amazon">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap模板</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/docs.css">
+    <link rel="stylesheet" href="css/header&footer.css">
+    <script src="js/jquery-3.1.1.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/tooltip.js"></script>
+    <script src="js/angular.js"></script>
+    <script src="js/angular-animate.js"></script>
+    <script src="js/angular-route.js"></script>
+</head>
+<body ng-controller="locationCtrl">
+     <div class="container">
+         <div class="row">
+             <img src="img/location.gif" class="statePic" alt="">
+             <h2>请选择配送地址</h2>
+             <p>您想使用的是下方显示的地址吗？如果是，点击相应的“配送到这个地址”按钮。 或者您可以输入一个新的送货地址： 添加新地址 </p>
+             <p>选择自提服务，可享免运费优惠。提示：便利店暂不提供门店开箱验货服务。查看详细信息; 点击查找自提点 。</p>
+             <hr>
+         </div>
+         <div class="row">
+             <div class="col-lg-3" ng-repeat="item in content">
+                 <p>姓名:{{item.name}}</p>
+                 <p>城市:{{item.city}}</p>
+                 <p>社区:{{item.community}}</p>
+                 <p>邮编:{{item.mail}}</p>
+                 <p>电话: {{item.phone}}</p>
+                 <a class="btn btn-block btn-primary" href="" ng-click="thisAds($index)">配送到此地址</a>
+                 <hr>
+                 <div class="row">
+                     <div class="col-lg-6">
+                         <a class="btn btn-block btn-default" href="">编辑</a>
+                     </div>
+                     <div class="col-lg-6">
+                         <a class="btn btn-block btn-default" href="">删除</a>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <hr>
+         <div class="row">
+             <div class="col-lg-6">
+                 <form class="form" name="add_form" novalidate>
+                     <div class="form-group">
+                         <h3>添加新地址</h3>
+                         姓名
+                         <input type="text" class="form-control" ng-model="add.Name" required ng-maxlength="10" placeholder="姓名为中文英文不超过10个字符">
+                         城市名称
+                         <input type="text" class="form-control" ng-model="add.City" required ng-maxlength="20" placeholder="城市为中文英文不超过20个字符">
+                         街道地址
+                         <input type="text" class="form-control" ng-model="add.Comu" required ng-maxlength="20" placeholder="街道为中文英文不超过20个字符">
+                         邮政编码
+                         <input type="text" class="form-control" ng-model="add.Mail" ng-pattern="/^[0-9]{6}$/" required placeholder="邮编为6位数字">
+                         联系电话
+                         <input type="text" class="form-control" ng-model="add.Phn" ng-pattern="/^[0-9]{11}$/" ng-minlength="11" required placeholder="联系电话为11位数字">
+                         <hr>
+                         <input type="submit" class="btn btn-primary" ng-disabled="add_form.$invalid" ng-click="addAddress()">
+                     </div>
+                 </form>
+
+             </div>
+         </div>
+     </div>
+     <footer></footer>
+     <!--<footer>-->
+         <!--<div class="footer_toTop"><a href="#">返回顶部</a></div>-->
+         <!--<div class="container">-->
+             <!--<div class="row">-->
+                 <!--<div class="col-lg-2 col-lg-offset-2">-->
+                     <!--<h3>了解我们</h3>-->
+                     <!--<ul>-->
+                         <!--<li><a href="#">人才招聘</a></li>-->
+                         <!--<li><a href="#">关于我们</a></li>-->
+                         <!--<li><a href="#">新闻中心</a></li>-->
+                         <!--<li><a href="#">公益社区</a></li>-->
+                         <!--<li><a href="#">移动客户端</a></li>-->
+                         <!--<li><a href="#">风险监测</a></li>-->
+                     <!--</ul>-->
+                 <!--</div>-->
+                 <!--<div class="col-lg-2">-->
+                     <!--<h3>合作信息</h3>-->
+                     <!--<ul>-->
+                         <!--<li><a href="#">全球开店</a></li>-->
+                         <!--<li><a href="#">我要开店</a></li>-->
+                         <!--<li><a href="#">亚马逊物流</a></li>-->
+                         <!--<li><a href="#">加入联盟</a></li>-->
+                         <!--<li><a href="#">我要推广</a></li>-->
+                         <!--<li><a href="#">合作伙伴</a></li>-->
+                     <!--</ul>-->
+                 <!--</div>-->
+                 <!--<div class="col-lg-2">-->
+                     <!--<h3>支付方式</h3>-->
+                     <!--<ul>-->
+                         <!--<li><a href="#">亚马逊支付</a></li>-->
+                         <!--<li><a href="#">亚马逊账户</a></li>-->
+                         <!--<li><a href="#">货到付款</a></li>-->
+                         <!--<li><a href="#">支付宝与财付通</a></li>-->
+                         <!--<li><a href="#">网上银行</a></li>-->
+                     <!--</ul>-->
+                 <!--</div>-->
+                 <!--<div class="col-lg-2">-->
+                     <!--<h3>帮助和购物指南</h3>-->
+                     <!--<ul>-->
+                         <!--<li><a href="#">订单查询</a></li>-->
+                         <!--<li><a href="#">配送费收取标准</a></li>-->
+                         <!--<li><a href="#">在线自助退换货</a></li>-->
+                         <!--<li><a href="#">退换货政策</a></li>-->
+                         <!--<li><a href="#">亚马逊助手</a></li>-->
+                         <!--<li><a href="#">帮助</a></li>-->
+                     <!--</ul>-->
+                 <!--</div>-->
+             <!--</div>-->
+         <!--</div>-->
+         <!--<div class="footer_end">-->
+             <!--<p><img src="img/footer.gif" alt=""></p>-->
+             <!--<p>美国加拿大巴西墨西哥英国德国法国西班牙意大利荷兰日本印度澳大利亚亚马逊家族网站:Amazon Web ServicesDiapers.comShopbop亚马逊物流+ YAMAXUN™</p>-->
+            <!--<p>使用条件隐私声明基于兴趣的广告版权所有 © 1996-2017，亚马逊公司或其关联公司</p>-->
+             <!--<p>京公网安备 11010502030232号 |电信与信息服务业务经营许可证：京ICP证010225号</p>-->
+             <!--<p>互联网药品信息服务资格证书 京-非经营性-2012-0005 | 出版物经营许可证新出发京批字第直0852号 |食品经营许可证：JY11105150653271</p>-->
+             <!--<p>网络文化经营许可证京网文[2015]0615-245 | 营业执照：91110105721471662U</p>-->
+         <!--</div>-->
+     <!--</footer>-->
+     <script>
+         var content=[{name:'Bill',city:'北京 北京市 海淀区',comunity:'万寿路甲61号院',mail:'100036',phone:'18*****7145'},
+             {name:'Bob',city:'北京 北京市 朝阳区',comunity:'关东店北街小区',mail:'100020',phone:'17*****9235'}]
+         var userId=localStorage['userId']
+         var app=angular.module('amazon',['ng','ngRoute','ngAnimate'])
+         app.controller('locationCtrl',['$scope','$http',function($scope,$http){
+             $http({
+                 method:'post',
+                 url:'data/addressList.php?id='+userId
+             }).success(function (data) {
+                 $scope.content=data
+                 console.log(data)
+             })
+             //$scope.content=content
+             $scope.thisAds=function(index){
+                 console.log(index,$scope.content[index].id)
+                 localStorage['addressId']=$scope.content[index].id
+                 localStorage['address']=$scope.content[index].community
+                 localStorage['userName']=$scope.content[index].name
+                 localStorage['phone']=$scope.content[index].phone
+                 location.href='style.html'
+             }
+             $scope.addAddress=function () {
+                 var obj={name:$scope.add.Name,city:$scope.add.City,community:$scope.add.Comu,mail:$scope.add.Mail,phone:$scope.add.Phn}
+                 console.log(obj)
+                 $scope.content.push(obj)
+                 console.log('data/addAddress.php?name='+obj.name+"&city="+obj.city+"&community="+obj.community+"&mail="+obj.mail+"&phone="+obj.phone+"&userId="+userId)
+                 //$scope.add=null
+                 $http({
+                     method:'post',
+                     url:'data/addAddress.php?name='+obj.name+"&city="+obj.city+"&community="+obj.community+"&mail="+obj.mail+"&phone="+obj.phone+"&userId="+userId
+                 }).success(function(data){
+                     console.log("添加地址成功！"+data)
+                 })
+             }
+         }])
+     </script>
+     <script>
+         $('footer').load('data/footer.php')
+     </script>
+</body>
+</html>
